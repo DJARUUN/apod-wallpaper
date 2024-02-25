@@ -47,6 +47,19 @@ func setWallpaper(image string) {
 }
 
 func archiveOldImages(image string) {
+	archivedPath := path.Join(directoryPath, "archived")
+
+	// Creates 'archived' directory if it doesnt exist
+	if _, err := os.Stat(archivedPath); os.IsNotExist(err) {
+		err := os.Mkdir(archivedPath, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Created directory 'archived'")
+	} else if err != nil {
+		log.Fatal(err)
+	}
+
 	files, err := os.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
