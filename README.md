@@ -3,4 +3,4 @@
 
 It works by contacting the API and finding the picture link in the response. It then takes that link and downloads the picture into the project directory. After that is done it moves any old pictures into the archived folder and sets todays picture as the wallpaper.
 
-<strong>Currently only works on Windows because yes.</strong>
+<strong>Only works on Windows because yes.</strong>
