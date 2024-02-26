@@ -32,6 +32,7 @@ var directoryPath, _ = os.Getwd()
 var file embed.FS
 
 func setWallpaper(image string) {
+	// Converts file path to something that is usable by the setter
 	fullImagePath := path.Join(directoryPath, image)
 	filenameUTF16, err := syscall.UTF16PtrFromString(fullImagePath)
 	if err != nil {
@@ -62,11 +63,11 @@ func archiveOldImages(image string) {
 		log.Fatal(err)
 	}
 
+	// Goes trough all files and moves any .jpg files that arent todays into the archived folder
 	files, err := os.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	for _, file := range files {
 		if file.Name() != image && strings.HasSuffix(file.Name(), ".jpg") {
 			oldPath := path.Join(directoryPath, file.Name())
@@ -104,12 +105,14 @@ func downloadImage(Response Response) string {
 	}
 	defer response.Body.Close()
 
+	// Creates file to write to
 	file, err := os.Create(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
+	// Starts writing to file and links a progressbar to the progress
 	bar := progressbar.DefaultBytes(
 		response.ContentLength,
 		"Downloading image",
@@ -125,6 +128,7 @@ func downloadImage(Response Response) string {
 }
 
 func fetchAPI(api string) Response {
+	// Fetches API and converts it into the wanted format
 	response, err := http.Get(api)
 	if err != nil {
 		log.Fatal(err)
@@ -143,6 +147,7 @@ func fetchAPI(api string) Response {
 }
 
 func getAPIKey() string {
+	// Reads embedded file .env and gets apiKey from it
 	data, err := file.ReadFile(".env")
 	if err != nil {
 		log.Fatal(err)
@@ -152,10 +157,11 @@ func getAPIKey() string {
 }
 
 func main() {
+	// Gets apiKey and splices together the full URL
 	apiKey := getAPIKey()
 	url := "https://api.nasa.gov/planetary/apod?api_key=" + apiKey
 
-	// Executes all functions and skips image related ones if its a video
+	// Executes all functions and skips image related ones if the media is a video
 	response := fetchAPI(url)
 	if response.MediaType == "video" {
 		fmt.Println("Media is a video, skipped")

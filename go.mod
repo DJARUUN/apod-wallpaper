@@ -2,10 +2,7 @@ module main.go
 
 go 1.22.0
 
-require (
-	github.com/joho/godotenv v1.5.1
-	github.com/schollz/progressbar/v3 v3.14.2
-)
+require github.com/schollz/progressbar/v3 v3.14.2
 
 require (
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
