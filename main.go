@@ -25,10 +25,6 @@ type Response struct {
 
 var directoryPath, _ = os.Getwd()
 
-func printExplation(explanation string) {
-	fmt.Println("\n", explanation)
-}
-
 func setWallpaper(image string) {
 	fullImagePath := path.Join(directoryPath, image)
 	filenameUTF16, err := syscall.UTF16PtrFromString(fullImagePath)
@@ -146,7 +142,7 @@ func main() {
 	image := downloadImage(response.HDURL, response.Date, response.Title)
 	archiveOldImages(image)
 	setWallpaper(image)
-	printExplation(response.Explanation)
+	fmt.Println("\n", response.Explanation)
 
 	// Keeps program running by waiting for user input
 	fmt.Print("\nPress any key to exit... ")
