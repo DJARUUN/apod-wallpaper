@@ -81,13 +81,26 @@ func archiveOldImages(image string) {
 }
 
 func downloadImage(link string, date string, title string) string {
+	fileName := fmt.Sprintf("[%s] %s.jpg", date, title)
+
+	// Skips downloading todays image if its already downloaded
+	files, err := os.ReadDir(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		if file.Name() == fileName {
+			fmt.Println("Image already downloaded, skipped")
+			return fileName
+		}
+	}
+
 	response, err := http.Get(link)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
 
-	fileName := fmt.Sprintf("[%s] %s.jpg", date, title)
 	file, err := os.Create(fileName)
 	if err != nil {
 		log.Fatal(err)
