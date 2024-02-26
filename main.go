@@ -21,7 +21,9 @@ type Response struct {
 	Date        string `json:"date"`
 	Explanation string `json:"explanation"`
 	HDURL       string `json:"hdurl"`
+	URL         string `json:"url"`
 	Title       string `json:"title"`
+	MediaType   string `json:"media_type"`
 }
 
 var directoryPath, _ = os.Getwd()
@@ -77,8 +79,8 @@ func archiveOldImages(image string) {
 	}
 }
 
-func downloadImage(link string, date string, title string) string {
-	fileName := fmt.Sprintf("[%s] %s.jpg", date, title)
+func downloadImage(Response Response) string {
+	fileName := fmt.Sprintf("[%s] %s.jpg", Response.Date, Response.Title)
 
 	// Skips downloading todays image if its already downloaded
 	files, err := os.ReadDir(".")
@@ -92,7 +94,8 @@ func downloadImage(link string, date string, title string) string {
 		}
 	}
 
-	response, err := http.Get(link)
+	// Not a video so do the regular stuff
+	response, err := http.Get(Response.HDURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -136,20 +139,27 @@ func fetchAPI(api string) Response {
 	return responseObject
 }
 
-func main() {
-	// Loads and gets environment variable API_KEY
+func getAPIKey() string {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
-	apiKey := os.Getenv("API_KEY")
+	return os.Getenv("API_KEY")
+}
 
+func main() {
+	apiKey := getAPIKey()
 	url := "https://api.nasa.gov/planetary/apod?api_key=" + apiKey
 
+	// Executes all functions and skips image related ones if its a video
 	response := fetchAPI(url)
-	image := downloadImage(response.HDURL, response.Date, response.Title)
-	archiveOldImages(image)
-	setWallpaper(image)
+	if response.MediaType == "video" {
+		fmt.Println("Media is a video, skipped")
+	} else {
+		image := downloadImage(response)
+		archiveOldImages(image)
+		setWallpaper(image)
+	}
 	fmt.Println("\n", response.Explanation)
 
 	// Keeps program running by waiting for user input
