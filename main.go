@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/joho/godotenv"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -136,7 +137,14 @@ func fetchAPI(api string) Response {
 }
 
 func main() {
-	url := "https://api.nasa.gov/planetary/apod?api_key=T7l7P7NmsfhoV0rhg7HWz8NYXaINQTaBzCTpWfZy"
+	// Loads and gets environment variable API_KEY
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+	apiKey := os.Getenv("API_KEY")
+
+	url := "https://api.nasa.gov/planetary/apod?api_key=" + apiKey
 
 	response := fetchAPI(url)
 	image := downloadImage(response.HDURL, response.Date, response.Title)
