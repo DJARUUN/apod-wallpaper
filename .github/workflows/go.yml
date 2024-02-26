@@ -24,7 +24,7 @@ jobs:
       run: echo "API_KEY=${API_KEY}" >> $GITHUB_ENV
 
     - name: Build
-      run: go build -v ./...
+      run: go build main.go
 
     - name: Test
       run: go test -v ./...
