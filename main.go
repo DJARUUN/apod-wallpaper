@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +14,6 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/joho/godotenv"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -27,6 +27,9 @@ type Response struct {
 }
 
 var directoryPath, _ = os.Getwd()
+
+//go:embed .env
+var file embed.FS
 
 func setWallpaper(image string) {
 	fullImagePath := path.Join(directoryPath, image)
@@ -140,11 +143,12 @@ func fetchAPI(api string) Response {
 }
 
 func getAPIKey() string {
-	err := godotenv.Load()
+	data, err := file.ReadFile(".env")
 	if err != nil {
 		log.Fatal(err)
 	}
-	return os.Getenv("API_KEY")
+	apiKey := strings.TrimPrefix(string(data), "API_KEY=")
+	return apiKey
 }
 
 func main() {
