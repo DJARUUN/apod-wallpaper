@@ -165,6 +165,7 @@ func main() {
 	response := fetchAPI(url)
 	if response.MediaType == "video" {
 		fmt.Println("Media is a video, skipped")
+		fmt.Println(response.URL)
 	} else {
 		image := downloadImage(response)
 		archiveOldImages(image)
