@@ -11,7 +11,7 @@ Write this in the file and enter your API key instead of ``yourapikeyhere``<br>
 ```
 API_KEY=yourapikeyhere
 ```
-Now you can either run the go file from the terminal or build the executable and be on your merry way!
+Now you can either run the ``main.go`` file from the terminal or build the executable and be on your merry way!
 
 <br>
 <strong>Currently only works on Windows because of the way the wallpaper is set.</strong>
