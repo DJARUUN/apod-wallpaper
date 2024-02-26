@@ -6,12 +6,12 @@ It works by contacting the API and finding the picture link in the response. It 
 ## How to use
 Go to the link and generate your API key<br>
 https://api.nasa.gov/<br><br>
-Create a file named ``.env`` in the project directory<br><br>
-Write this in the file and enter your API key instead of ``yourapikeyhere``<br>
-```
+Create a file named ``.env`` in the project directory and write this in it<br>
+```env
+# Replace 'yourapikeyhere' with your API key
 API_KEY=yourapikeyhere
 ```
-Now you can either run the ``main.go`` file from the terminal or build the executable and be on your merry way!
+Now you can either run the ``main.go`` file directly with ``go run main.go`` or use ``go build main.go`` to build an executable file of the program.
 
 <br>
 <strong>Currently only works on Windows because of the way the wallpaper is set.</strong>
