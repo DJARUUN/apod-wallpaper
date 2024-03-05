@@ -83,8 +83,22 @@ func archiveOldImages(image string) {
 	}
 }
 
+func stripFileName(filename string) string {
+	forbiddenCharacters := `\/:*?"<>|`
+
+	removeForbidden := func(r rune) rune {
+		if strings.ContainsRune(forbiddenCharacters, r) {
+			return -1
+		}
+		return r
+	}
+
+	return strings.Map(removeForbidden, filename)
+}
+
 func downloadImage(Response Response) string {
 	fileName := fmt.Sprintf("[%s] %s.jpg", Response.Date, Response.Title)
+	strippedFileName := stripFileName(fileName)
 
 	// Skips downloading todays image if its already downloaded
 	files, err := os.ReadDir(".")
@@ -92,9 +106,9 @@ func downloadImage(Response Response) string {
 		log.Fatal("Failed to read directory: ", err)
 	}
 	for _, file := range files {
-		if file.Name() == fileName {
+		if file.Name() == strippedFileName {
 			fmt.Println("Image already downloaded, skipped")
-			return fileName
+			return strippedFileName
 		}
 	}
 
@@ -106,7 +120,7 @@ func downloadImage(Response Response) string {
 	defer response.Body.Close()
 
 	// Creates file to write to
-	file, err := os.Create(fileName)
+	file, err := os.Create(strippedFileName)
 	if err != nil {
 		log.Fatal("Failed to create file: ", err)
 	}
@@ -117,14 +131,14 @@ func downloadImage(Response Response) string {
 		response.ContentLength,
 		"Downloading image",
 	)
-
 	_, err = io.Copy(io.MultiWriter(file, bar), response.Body)
 	if err != nil {
 		log.Fatal("Failed to write to file: ", err)
 	}
 
-	fmt.Printf("Image downloaded as '%s'\n", fileName)
-	return fileName
+	fmt.Printf("Image downloaded as '%s'\n", strippedFileName)
+
+	return strippedFileName
 }
 
 func fetchAPI(api string) Response {
