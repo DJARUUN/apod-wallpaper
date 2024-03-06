@@ -92,7 +92,6 @@ func stripFileName(filename string) string {
 		}
 		return r
 	}
-
 	return strings.Map(removeForbidden, filename)
 }
 
